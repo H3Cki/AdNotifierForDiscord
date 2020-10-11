@@ -1,0 +1,31 @@
+{
+    "sites": {
+        "otomoto": {
+            "active": true,
+            "urls": []
+        },
+        "olx": {
+            "active": true,
+            "urls": []
+        },
+        "mobile": {
+            "active": false,
+            "urls": []
+        }
+    },
+    "webhook": {
+        "url": [],
+        "name": "MobileNotifierWebhook",
+        "avatar_url": []
+    },
+    "notifier": {
+        "activity_hours": {
+            "start": "7:30",
+            "end": "20:30"
+        },
+        "delay_time_seconds": {
+            "min": 300,
+            "max": 1800
+        }
+    }
+}
