@@ -1,29 +1,32 @@
 {
-    "sites": {
-        "otomoto": {
+    "sites": [
+         {
+            "name": "otomoto",
             "active": true,
             "urls": []
         },
-        "olx": {
+        {
+            "name": "olx",
             "active": true,
             "urls": []
         },
-        "mobile": {
+        {
+            "name": "mobile",
             "active": false,
             "urls": []
         }
-    },
+    ],
     "webhook": {
-        "url": [],
-        "name": "MobileNotifierWebhook",
-        "avatar_url": []
+        "name": "Notifier",
+        "url": "",
+        "avatar_url": ""
     },
     "notifier": {
         "activity_hours": {
             "start": "7:30",
             "end": "20:30"
         },
-        "delay_time_seconds": {
+        "sleep": {
             "min": 300,
             "max": 1800
         }
