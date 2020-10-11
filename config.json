@@ -14,9 +14,9 @@
         }
     },
     "webhook": {
-        "url": [],
+        "url": "",
         "name": "MobileNotifierWebhook",
-        "avatar_url": []
+        "avatar_url": ""
     },
     "notifier": {
         "activity_hours": {
