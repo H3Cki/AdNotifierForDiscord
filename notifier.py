@@ -43,7 +43,7 @@ async def update_mobile(site):
 	for url in urls:
 		async with session.get(url) as r:
 			r = requests.get(url)
-			soup = BeautifulSoup(r.text,'html.parser')
+			soup = BeautifulSoup(await r.text(),'html.parser')
 			section = soup.find('section',{'class' : 'srp-result-block'})
 			ads = section.find_all('a',{'class': 'vehicle-data'})
 			for ad in ads:
@@ -63,7 +63,7 @@ async def update_otomoto(site):
 	new_ads = []
 	for url in urls:
 		async with session.get(url) as r:
-			soup = BeautifulSoup(r.text,'html.parser')
+			soup = BeautifulSoup(await r.text(),'html.parser')
 			ads = soup.find_all('a',{'class': 'offer-title__link'})
 			for ad in ads:
 				href = ad.get('href')
@@ -81,7 +81,7 @@ async def update_olx(site):
 	new_ads = []
 	for url in urls:
 		async with session.get(url) as r:
-			soup = BeautifulSoup(r.text,'html.parser')
+			soup = BeautifulSoup(await r.text(),'html.parser')
 			table = soup.find('table',{'id': 'offers_table'})
 			ads = table.find_all('a',{'class': 'detailsLink'})
 			for ad in ads:
