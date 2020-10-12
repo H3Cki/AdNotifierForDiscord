@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 import random
 import time as the_time
 from discord import Webhook, AsyncWebhookAdapter
@@ -134,22 +134,33 @@ def update():
 	handle_ads(ads)
 
 
-def in_rh():
+def in_rh(start,end):
 	now = datetime.now().time()
-	start = CONFIG['notifier']['activity_hours']['start']
-	end = CONFIG['notifier']['activity_hours']['end']
-	condition = now > start and now < end
+	condition = now >= start and now <= end
 	return condition if start < end else not condition
 
+def time_until(time,delta = timedelta()):
+	now = datetime.now()
+	future = datetime.now().replace(hour=time.hour,  minute=time.minute, microsecond=0, second=0) + delta
+	return future - now
 
 def start():
 	first_run = True
 	load_config()
+	start = CONFIG['notifier']['activity_hours']['start']
+	end = CONFIG['notifier']['activity_hours']['end']
 	while True:
-		if in_rh():
+		irh = in_rh(start,end)
+		_min, _max = (CONFIG['notifier']['sleep']['min'], CONFIG['notifier']['sleep']['max'])
+		if irh:
 			update()
 			first_run = False
-		st = random.uniform(CONFIG['notifier']['sleep']['min'], CONFIG['notifier']['sleep']['max'])
+			if _max > time_until(end).total_seconds():
+				st = time_until(start if start > end else end).total_seconds()
+			else:
+				st = random.uniform(_min,_max)
+		else:
+			st = time_until(CONFIG['notifier']['activity_hours']['start']).total_seconds()
 		the_time.sleep(st)
 
 start()
