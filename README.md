@@ -4,6 +4,16 @@ Since notifications from sites OLX, OTOMOTO and Mobile.de are unreliable and I f
 
 `! Mobile.de scraping is supported but it's disabled by default due to Mobile's terms of use prohibiting automated access.`
 
+# Dependencies
+```
+``
+
+# How to run
+Requires Python 3.6 or higher.
+```
+pip install requirements.txt
+python notifier.py
+```
 
 
 # Config
@@ -66,12 +76,12 @@ If `start` is greater then `end` notifier will work from `start` to `end` hour o
 
 
 # Config parsing
-Script will iterate throught websites in `config["sites"]` to find functions that handle it's urls.  
+Script will iterate throught websites in `config["sites"]` to find coroutines that handle it's urls.  
 Those functions must be named `update_x` where `x` is the website name.
 
 Example for ebay:
 ```py
-def update_ebay(site):
+async def update_ebay(site):
   if site["active"]:
     print(f'{site["name"]} is ready and has {len(site["urls"])} search urls to check')
   else:
