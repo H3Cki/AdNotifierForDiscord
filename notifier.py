@@ -124,10 +124,11 @@ async def handle_ads(new_ads):
 			to_notify.append(ad)
 
 	if first_run == False and len(to_notify):
-		await send(f'```css\n[{datetime.now().strftime("%H:%M")}] --- {len(to_notify)} new cars ---```')
+		await send(f'```css\n[{datetime.now().strftime("%H:%M")}] --- {len(to_notify)} new car{"s" if len(to_notify) != 1 else ""} ---```')
 		for i, ad in enumerate(to_notify):
 			await send(notification_text(ad,i))
-				
+	elif not len(to_notify):
+		print(datetime.now(), "No results.")
 
 async def update():
 	ads = []
