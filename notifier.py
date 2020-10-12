@@ -122,16 +122,14 @@ async def handle_ads(new_ads):
 		else:
 			ads[href] = ad
 			to_notify.append(ad)
-	first_run = False
+
 	if first_run == False and len(to_notify):
-		await send(f'```css\n[{datetime.now().strftime("%H:%M")}] --- {len(to_notify)} new car{"s" if len(to_notify) != 1 else ""} ---```')
+		await send(f'```css\n[{datetime.now().strftime("%H:%M")}] --- {len(to_notify)} new cars ---```')
 		for i, ad in enumerate(to_notify):
 			await send(notification_text(ad,i))
-	elif not len(to_notify):
-		print(datetime.now(), "No results")
+				
 
 async def update():
-	print('update')
 	ads = []
 	for site in CONFIG['sites']:
 		if site['active']:
@@ -178,7 +176,6 @@ async def start():
 				st = time_until(sleep_until).total_seconds()
 			else:
 				st = random.uniform(_min,_max)
-				print(datetime.now(), f'Sleeping randomly for {int(st)} seconds.')
 		else:
 			st = time_until(CONFIG['notifier']['activity_hours']['start']).total_seconds()
 			print(datetime.now(), f'Sleeping until start ({start})')
