@@ -3,23 +3,17 @@
          {
             "name": "otomoto",
             "active": true,
-            "urls": [
-                "https://www.otomoto.pl/osobowe/seg-cabrio--seg-city-car--seg-compact--seg-coupe--seg-mini--seg-sedan/od-2008/?search%5Bfilter_float_price%3Afrom%5D=10000&search%5Bfilter_float_price%3Ato%5D=24000&search%5Bfilter_enum_has_vin%5D=1&search%5Bfilter_enum_fuel_type%5D%5B0%5D=petrol&search%5Bfilter_float_engine_power%3Afrom%5D=161&search%5Border%5D=created_at_first%3Adesc&search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D="
-            ]
+            "urls": []
         },
         {
             "name": "olx",
             "active": true,
-            "urls": [
-                "https://www.olx.pl/motoryzacja/samochody/?search%5Bfilter_float_price%3Afrom%5D=9000&search%5Bfilter_float_price%3Ato%5D=24000&search%5Bfilter_float_year%3Afrom%5D=2008&search%5Bfilter_enum_petrol%5D%5B0%5D=petrol&search%5Bfilter_float_enginepower%3Afrom%5D=161&search%5Bfilter_enum_car_body%5D%5B0%5D=cabriolet&search%5Bfilter_enum_car_body%5D%5B1%5D=sedan&search%5Bfilter_enum_car_body%5D%5B2%5D=coupe&search%5Bfilter_enum_car_body%5D%5B3%5D=hatchback&search%5Bfilter_enum_transmission%5D%5B0%5D=manual"
-            ]
+            "urls": []
         },
         {
             "name": "mobile",
             "active": false,
-            "urls": [
-                "https://www.mobile.de/pl/kategoria/samochod/vhc:car,cnt:de,srt:date,sro:desc,frn:2009,prx:5100,ful:petrol,pwn:125,cli:automatic_climatisation,vcg:sportscar!limousine!cabrio!smallcar!othercar"
-            ]
+            "urls": []
         }
     ],
     "webhook": {
