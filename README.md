@@ -1,12 +1,9 @@
 # AdNotifierForDiscord
 
-Since notifications from sites OLX, OTOMOTO and Mobile.de are unreliable and I found myself forgetting about checking my bookmarked searches regularly, I made a scraping script that sends a notification to Discord using a webhook.
+Since notifications from sites OLX, OTOMOTO and Mobile.de are unreliable and inconsistent, I made a scraping script that sends a notification to Discord using a webhook.
 
 `! Mobile.de scraping is supported but it's disabled by default due to Mobile's terms of use prohibiting automated access.`
 
-# Dependencies
-```
-``
 
 # How to run
 Requires Python 3.6 or higher.
