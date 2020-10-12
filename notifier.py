@@ -17,7 +17,7 @@ first_run = True
 
 def load_config():
     global CONFIG
-    with open('config.json', 'r') as f:
+    with open('config.json', 'r', encoding='utf-8') as f:
         CONFIG = json.load(f)
     parse_config(CONFIG)
 
@@ -142,9 +142,12 @@ def in_rh(start,end):
 def time_until(time,delta = timedelta()):
 	now = datetime.now()
 	future = datetime.now().replace(hour=time.hour,  minute=time.minute, microsecond=0, second=0) + delta
+	if future < now:
+		future += timedelta(days=1)
 	return future - now
 
 def start():
+	print(datetime.now(), "Notifier started")
 	first_run = True
 	load_config()
 	start = CONFIG['notifier']['activity_hours']['start']
@@ -156,11 +159,18 @@ def start():
 			update()
 			first_run = False
 			if _max > time_until(end).total_seconds():
-				st = time_until(start if start > end else end).total_seconds()
+				if start > end:
+					sleep_until = start
+					print(datetime.now(), f'Sleeping until start ({start})')
+				else:
+					sleep_until = end
+					print(datetime.now(), f'Sleeping until end ({end})')
+				st = time_until(sleep_until).total_seconds()
 			else:
 				st = random.uniform(_min,_max)
 		else:
 			st = time_until(CONFIG['notifier']['activity_hours']['start']).total_seconds()
+			print(datetime.now(), f'Sleeping until start ({start})')
 		the_time.sleep(st)
 
 start()

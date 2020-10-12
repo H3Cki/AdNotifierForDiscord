@@ -23,8 +23,8 @@
     },
     "notifier": {
         "activity_hours": {
-            "start": "3:30",
-            "end": "5:05"
+            "start": "7:30",
+            "end": "20:30"
         },
         "sleep": {
             "min": 300,
