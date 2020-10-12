@@ -1,0 +1,4 @@
+aiohttp==3.6.2
+asyncio==3.4.3
+beautifulsoup4==4.7.1
+discord.py==1.5.0

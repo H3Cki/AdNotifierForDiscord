@@ -14,6 +14,7 @@ CONFIG = {}
 headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36'}
 ads = {}
 first_run = True
+session = None
 
 #CONFIG FUNCTIONS
 
@@ -35,61 +36,62 @@ def parse_hour(string):
 
 # SITE FUNCTIONS
      
-def update_mobile(site):
+async def update_mobile(site):
 	urls = site['urls']
 	platform = site['name']
 	new_ads = []
 	for url in urls:
-		r = requests.get(url, headers=headers)
-		soup = BeautifulSoup(r.text,'html.parser')
-		section = soup.find('section',{'class' : 'srp-result-block'})
-		ads = section.find_all('a',{'class': 'vehicle-data'})
-		for ad in ads:
-			href = 'https://www.mobile.de' + ad.get('href')
-			new_ads.append({
-				'href' : href,
-				'title' : ad.find('h3').getText(),
-				'platform' : platform,
-				'url' : href
-			})
+		async with session.get(url) as r:
+			r = requests.get(url)
+			soup = BeautifulSoup(r.text,'html.parser')
+			section = soup.find('section',{'class' : 'srp-result-block'})
+			ads = section.find_all('a',{'class': 'vehicle-data'})
+			for ad in ads:
+				href = 'https://www.mobile.de' + ad.get('href')
+				new_ads.append({
+					'href' : href,
+					'title' : ad.find('h3').getText(),
+					'platform' : platform,
+					'url' : href
+				})
 	return new_ads
 
 
-def update_otomoto(site):
+async def update_otomoto(site):
 	urls = site['urls']
 	platform = site['name']
 	new_ads = []
 	for url in urls:
-		r = requests.get(url, headers=headers)
-		soup = BeautifulSoup(r.text,'html.parser')
-		ads = soup.find_all('a',{'class': 'offer-title__link'})
-		for ad in ads:
-			href = ad.get('href')
-			new_ads.append({
-				'href' : href,
-				'title' : ad.get('title'),
-				'platform' : platform,
-				'url' : href
-			})
+		async with session.get(url) as r:
+			soup = BeautifulSoup(r.text,'html.parser')
+			ads = soup.find_all('a',{'class': 'offer-title__link'})
+			for ad in ads:
+				href = ad.get('href')
+				new_ads.append({
+					'href' : href,
+					'title' : ad.get('title'),
+					'platform' : platform,
+					'url' : href
+				})
 	return new_ads
 
-def update_olx(site):
+async def update_olx(site):
 	urls = site['urls']
 	platform = site['name']
 	new_ads = []
 	for url in urls:
-		r = requests.get(url, headers=headers)
-		soup = BeautifulSoup(r.text,'html.parser')
-		table = soup.find('table',{'id': 'offers_table'})
-		ads = table.find_all('a',{'class': 'detailsLink'})
-		for ad in ads:
-			href = ad.get('href')
-			new_ads.append({
-				'href' : href,
-				'title' : ad.findChildren()[0].get('alt'),
-				'platform' : platform,
-				'url' : href
-			})
+		async with session.get(url) as r:
+			soup = BeautifulSoup(r.text,'html.parser')
+			table = soup.find('table',{'id': 'offers_table'})
+			ads = table.find_all('a',{'class': 'detailsLink'})
+			for ad in ads:
+				href = ad.get('href')
+				new_ads.append({
+					'href' : href,
+					'title' : ad.findChildren()[0].get('alt'),
+					'platform' : platform,
+					'url' : href
+				})
 	return new_ads
 
 
@@ -106,7 +108,7 @@ def notification_text(ad, i=None):
 
 #AD FUNCTIONS
 
-def handle_ads(new_ads):
+async def handle_ads(new_ads):
 
 	for old_href in dict(ads):
 		if old_href not in [ad['href'] for ad in new_ads]:
@@ -121,19 +123,18 @@ def handle_ads(new_ads):
 			ads[href] = ad
 			to_notify.append(ad)
 
-	
 	if first_run == False and len(to_notify):
-		asyncio.run(send(f'```css\n[{datetime.now().strftime("%H:%M")}] --- {len(to_notify)} new cars ---```'))
+		await send(f'```css\n[{datetime.now().strftime("%H:%M")}] --- {len(to_notify)} new cars ---```')
 		for i, ad in enumerate(to_notify):
-			asyncio.run(send(notification_text(ad,i)))
+			await send(notification_text(ad,i))
 				
 
-def update():
+async def update():
 	ads = []
 	for site in CONFIG['sites']:
 		if site['active']:
-			ads += site['f'](site)
-	handle_ads(ads)
+			ads += await site['f'](site)
+	await handle_ads(ads)
 
 
 def in_rh(start,end):
@@ -148,17 +149,22 @@ def time_until(time,delta = timedelta()):
 		future += timedelta(days=1)
 	return future - now
 
-def start():
-	first_run = True
+async def start():
+	global session
+	
 	load_config()
-	print(datetime.now(), "Notifier started")
+	print('Config loaded.')
+	first_run = True
+	session = aiohttp.ClientSession(headers=headers)
+	print('Session started.')
+	print(datetime.now(), '| Scraping', sum([len(site['urls']) for site in CONFIG['sites'] if site['active']]), 'urls from', len([site for site in CONFIG['sites'] if site['active']]), 'different sites.')
 	start = CONFIG['notifier']['activity_hours']['start']
 	end = CONFIG['notifier']['activity_hours']['end']
 	while True:
 		irh = in_rh(start,end)
 		_min, _max = (CONFIG['notifier']['sleep']['min'], CONFIG['notifier']['sleep']['max'])
 		if irh:
-			update()
+			await update()
 			first_run = False
 			if _max > time_until(end).total_seconds():
 				if start > end:
@@ -173,6 +179,6 @@ def start():
 		else:
 			st = time_until(CONFIG['notifier']['activity_hours']['start']).total_seconds()
 			print(datetime.now(), f'Sleeping until start ({start})')
-		the_time.sleep(st)
+		await asyncio.sleep(st)
 
-start()
+asyncio.run(start())
